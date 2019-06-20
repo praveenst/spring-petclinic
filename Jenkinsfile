@@ -8,7 +8,8 @@ pipeline {
     stages {
         stage('Build') { 
             steps {
-                sh 'mvn clean package' 
+                sh 'mvn clean package'
+                java -jar target/*.jar
             }
         }
         stage('Test') {
@@ -19,6 +20,22 @@ pipeline {
                 always {
                     junit 'target/surefire-reports/*.xml'
                 }
+            }
+        }
+        stage('Stage') {
+            steps {
+                sh 'mvn verify'
+            }
+            post {
+                always {
+                    junit 'target\jmeter\results\dashboard'
+                }
+            }
+        }
+        stage('Deliver') {
+            steps {
+                sh 'docker build -t praveenst/pet-store-aws .'
+                sh 'docker push praveenst/pet-store-aws'
             }
         }
     }
