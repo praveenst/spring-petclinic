@@ -34,7 +34,11 @@ sudo yum install docker -y
 sudo service docker start
 sudo docker run -p 80:8080 praveenst/pet-store-aws
 
-
+        stage('Stage') {
+            steps {
+                sh 'mvn verify'
+            }
+        }
 
         stage('Deliver') {
             steps {

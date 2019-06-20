@@ -27,7 +27,5 @@ pipeline {
                 sh 'mvn verify'
             }
         }
-
     }
-    
 }
