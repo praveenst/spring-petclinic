@@ -89,6 +89,81 @@ docker run   --rm   -u root   -p 9200:8080   -v jenkins-data:/var/jenkins_home  
 
 ```
 
+## Performance Test Harness
+
+Another key effor to this project is to have Jmeter take care of the performance testing. 
+
+To run the Jmeter tests as part of the pipeline stage `Stage` , maven is used to implement that and as a result following changes are needed in pom.xml
+
+```
+       <plugin>
+            <groupId>com.lazerycode.jmeter</groupId>
+            <artifactId>jmeter-maven-plugin</artifactId>
+            <version>2.0.3</version>
+            <configuration>
+                <testResultsTimestamp>false</testResultsTimestamp>
+                <propertiesUser>
+                    <threadgroup.count>2</threadgroup.count>
+                    <threadgroup.rampup>2</threadgroup.rampup>
+                    <threadgroup.duration>5</threadgroup.duration>
+                    <jmeter.save.saveservice.output_format>csv</jmeter.save.saveservice.output_format>
+                    <jmeter.save.saveservice.bytes>true</jmeter.save.saveservice.bytes>
+                    <jmeter.save.saveservice.label>true</jmeter.save.saveservice.label>
+                    <jmeter.save.saveservice.latency>true</jmeter.save.saveservice.latency>
+                    <jmeter.save.saveservice.response_code>true</jmeter.save.saveservice.response_code>
+                    <jmeter.save.saveservice.response_message>true</jmeter.save.saveservice.response_message>
+                    <jmeter.save.saveservice.successful>true</jmeter.save.saveservice.successful>
+                    <jmeter.save.saveservice.thread_counts>true</jmeter.save.saveservice.thread_counts>
+                    <jmeter.save.saveservice.thread_name>true</jmeter.save.saveservice.thread_name>
+                    <jmeter.save.saveservice.time>true</jmeter.save.saveservice.time>
+                </propertiesUser>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>jmeter-tests</id>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>jmeter</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+                <execution>
+                    <phase>pre-site</phase>
+                    <configuration>
+                        <tasks>
+                            <mkdir dir="${basedir}/target/jmeter/results/dashboard" />
+                            <copy file="${basedir}/src/test/resources/reportgenerator.properties" 
+                                  tofile="${basedir}/target/jmeter/bin/reportgenerator.properties" />
+                            <copy todir="${basedir}/target/jmeter/bin/report-template">
+                                <fileset dir="${basedir}/src/test/resources/report-template" />
+                            </copy>
+                            <java jar="${basedir}/target/jmeter/bin/ApacheJMeter-3.0.jar" fork="true">
+                                <arg value="-g" />
+                                <arg value="${basedir}/target/jmeter/results/*.jtl" />
+                                <arg value="-o" />
+                                <arg value="${basedir}/target/jmeter/results/dashboard/" />
+                            </java>
+                        </tasks>
+                    </configuration>
+                    <goals>
+                        <goal>run</goal>
+                    </goals>
+                </execution>
+            </executions>
+```
+
+Once you have the pom file, locally executing `./mvnw verify` from the root folder should take care of actually running the performance test. 
+
+The throughput jmeter tests are in project root folder as `pet_clinic_local_aws_throughput.jmx`
+
+For the automated verify stage, the jmeter file will be generated in `target/jmeter/src` folder and throughput test above couldo be copied over to that directory to get it part of the pipeling before invoking jenkins.
+
+If jenkins need to pick up the change, make sure you stage the changes and commit to git repository. My thought process is to have this additional manual step as part of the approval process once the pipeline stages pass. The  `pet_clinic_local_aws_throughput.jmx` can  be executed as such using jmeter commandline. 
+
 ## Deploying on aws
 
 ```
