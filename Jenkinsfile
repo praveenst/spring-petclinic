@@ -26,11 +26,6 @@ pipeline {
             steps {
                 sh 'mvn verify'
             }
-            post {
-                always {
-                    junit 'target/jmeter/results/dashboard'
-                }
-            }
         }
         stage('Deliver') {
             steps {
