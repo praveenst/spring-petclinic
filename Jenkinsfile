@@ -27,12 +27,7 @@ pipeline {
                 sh 'mvn verify'
             }
         }
-        stage('Deliver') {
-            steps {
-                sh 'docker build -t praveenst/pet-store-aws .'
-                sh 'docker push praveenst/pet-store-aws'
-            }
-        }
+
     }
     
 }
