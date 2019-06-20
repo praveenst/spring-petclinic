@@ -1,4 +1,6 @@
-# About Pipeline Project [![Github Location](https://github.com/praveenst/spring-petclinic)]
+# About Pipeline Project 
+
+- [Project Github Location](https://github.com/praveenst/spring-petclinic)
 
 ## To execute performance test script this locally,
 
