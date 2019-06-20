@@ -28,7 +28,7 @@ pipeline {
             }
             post {
                 always {
-                    junit 'target\jmeter\results\dashboard'
+                    junit 'target/jmeter/results/dashboard'
                 }
             }
         }
