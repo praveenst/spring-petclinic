@@ -26,16 +26,7 @@
       </ThreadGroup>
       <hashTree>
         <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Petclinic Request Headers" enabled="true">
-          <collectionProp name="HeaderManager.headers">
-            <elementProp name="" elementType="Header">
-              <stringProp name="Header.name">AWS_ACCESS_KEY</stringProp>
-              <stringProp name="Header.value">AKIAXDOCTXW53MIA5TNB</stringProp>
-            </elementProp>
-            <elementProp name="" elementType="Header">
-              <stringProp name="Header.name">AWS_SECRET_KEY</stringProp>
-              <stringProp name="Header.value">uIQDOe8WhF1eDxRqklKzcYDW+PXaO6taUEZ1cszR</stringProp>
-            </elementProp>
-          </collectionProp>
+          <collectionProp name="HeaderManager.headers"/>
         </HeaderManager>
         <hashTree/>
         <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="Cookie Manager" enabled="true">
